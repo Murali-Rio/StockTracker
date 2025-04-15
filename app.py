@@ -14,8 +14,151 @@ import db_utils
 st.set_page_config(
     page_title="Stock Market Performance Tracker",
     page_icon="📈",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
+
+# Custom CSS for better styling
+st.markdown("""
+<style>
+    /* Main page styling */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    /* Header styling */
+    h1, h2, h3 {
+        color: #1E88E5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    h1 {
+        background: linear-gradient(to right, #1E88E5, #42A5F5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        padding-top: 1rem;
+        border-bottom: 2px solid #f0f2f6;
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Stock cards styling */
+    .stContainer {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 0.5rem;
+        border: 1px solid #e6e6e6;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .stContainer:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    /* Metric styling */
+    div[data-testid="stMetricValue"] {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    
+    /* Tab styling */
+    div[data-testid="stHorizontalBlock"] {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 2rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 3rem;
+        white-space: pre-wrap;
+        border-radius: 4px 4px 0 0;
+        padding: 0 1rem;
+        font-size: 1rem;
+    }
+    
+    /* Active tab styling */
+    .stTabs [aria-selected="true"] {
+        background-color: #e6f3ff !important;
+        font-weight: bold;
+    }
+    
+    /* Button styling */
+    .stButton button {
+        background-color: #1E88E5;
+        color: white;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton button:hover {
+        background-color: #1976D2;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Divider styling */
+    hr {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    }
+    
+    /* Footer styling */
+    footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f0f2f6;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    /* Dataframe styling */
+    .dataframe {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e6e6e6;
+    }
+
+    /* Sidebar styling */
+    section[data-testid="stSidebar"] {
+        background-color: #f8f9fa;
+        border-right: 1px solid #e6e6e6;
+    }
+    
+    /* Make positive values green and negative values red */
+    .positive {
+        color: green !important;
+        font-weight: bold;
+    }
+    
+    .negative {
+        color: red !important;
+        font-weight: bold;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Page title
 st.title("📈 Stock Market Performance Tracker")
