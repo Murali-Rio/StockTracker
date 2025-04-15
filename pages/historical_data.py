@@ -69,8 +69,7 @@ try:
                 top_performers,
                 r='avg_percent_change',
                 theta='ticker',
-                color='avg_percent_change',
-                color_continuous_scale=['red', 'green'],
+                color_discrete_sequence=['green'],
                 line_close=True,
                 title=f"Top Performers Radar - Last {lookback_days} Days",
                 hover_name='company_name'
@@ -139,8 +138,7 @@ try:
                 bottom_performers,
                 r='avg_percent_change',
                 theta='ticker',
-                color='avg_percent_change',
-                color_continuous_scale=['red', 'green'],
+                color_discrete_sequence=['red'],
                 line_close=True,
                 title=f"Bottom Performers Radar - Last {lookback_days} Days",
                 hover_name='company_name'

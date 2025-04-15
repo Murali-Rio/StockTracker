@@ -261,8 +261,7 @@ def display_stock_data():
                     top_10, 
                     r='Percent Change', 
                     theta='Ticker',
-                    color='Percent Change',
-                    color_continuous_scale=['red', 'green'],
+                    color_discrete_sequence=['green'],
                     line_close=True,
                     title=f"Top 10 Performers - Polar View"
                 )
@@ -332,8 +331,7 @@ def display_stock_data():
                     bottom_10, 
                     r='Percent Change', 
                     theta='Ticker',
-                    color='Percent Change',
-                    color_continuous_scale=['red', 'green'],
+                    color_discrete_sequence=['red'],
                     line_close=True,
                     title=f"Bottom 10 Performers - Polar View"
                 )
