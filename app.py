@@ -2,8 +2,13 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import time
+import os
+
+# Import database utilities
+import db_utils
 
 # Set page configuration
 st.set_page_config(
@@ -178,6 +183,13 @@ def display_stock_data():
         df_sorted = df.sort_values(by=sort_col, ascending=False)
         top_10 = df_sorted.head(10).copy()
         bottom_10 = df_sorted.tail(10).copy()
+        
+        # Save data to database
+        try:
+            db_utils.save_stock_performance(top_10, selected_index, selected_period)
+            db_utils.save_stock_performance(bottom_10, selected_index, selected_period)
+        except Exception as e:
+            st.warning(f"Could not save to database: {e}")
         
         # Display last updated timestamp
         last_refresh_time = datetime.now()
