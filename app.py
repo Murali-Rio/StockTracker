@@ -209,10 +209,10 @@ if st.sidebar.button("Refresh Data"):
     st.rerun()
 
 # Auto-refresh option
-auto_refresh = st.sidebar.checkbox("Auto-refresh (daily)", value=False)
+auto_refresh = st.sidebar.checkbox("Auto-refresh (every minute)", value=False)
 last_refresh_time = datetime.now()
 
-@st.cache_data(ttl=86400)  # Cache data for 24 hours (daily)
+@st.cache_data(ttl=60)  # Cache data for 60 seconds (1 minute)
 def get_stock_data(index_symbol, period):
     try:
         # Get constituents of the selected index
@@ -549,16 +549,15 @@ if auto_refresh:
     # Add a placeholder for the countdown timer
     countdown_placeholder = st.empty()
     
-    # Calculate time until next refresh (24 hours from last refresh)
-    next_refresh = last_refresh_time + timedelta(hours=24)
+    # Calculate time until next refresh (1 minute from last refresh)
+    next_refresh = last_refresh_time + timedelta(minutes=1)
     
-    # Update countdown every minute
+    # Update countdown every second
     while datetime.now() < next_refresh and auto_refresh:
         time_left = (next_refresh - datetime.now()).total_seconds()
-        hours, remainder = divmod(int(time_left), 3600)
-        mins, secs = divmod(remainder, 60)
-        countdown_placeholder.markdown(f"Next refresh in: **{hours:02d}:{mins:02d}:{secs:02d}**")
-        time.sleep(60)  # Update every minute instead of every second
+        mins, secs = divmod(int(time_left), 60)
+        countdown_placeholder.markdown(f"Next refresh in: **{mins:02d}:{secs:02d}**")
+        time.sleep(1)  # Update every second
         
         # Check if it's time to refresh
         if datetime.now() >= next_refresh:
@@ -569,5 +568,5 @@ st.markdown("---")
 st.markdown("""
 **About this app:**  
 This application displays real-time stock performance data using Yahoo Finance API.
-Data is refreshed daily when auto-refresh is enabled, or you can manually refresh using the button.
+Data is refreshed every minute when auto-refresh is enabled, or you can manually refresh using the button in the sidebar.
 """)
