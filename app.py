@@ -201,6 +201,8 @@ def display_stock_data():
         # Display top performers
         with col1:
             st.subheader("🚀 Top 10 Performers")
+            
+            # Create table for top performers
             for i, row in top_10.iterrows():
                 with st.container():
                     cols = st.columns([3, 2, 2, 2])
@@ -216,21 +218,62 @@ def display_stock_data():
                         st.markdown(f"Vol: {row['Volume']:,}")
                     st.divider()
             
-            # Create visualization for top performers
-            fig_top = px.bar(
-                top_10, 
-                x='Ticker', 
-                y='Percent Change',
-                color='Percent Change',
-                color_continuous_scale=['red', 'green'],
-                title=f"Top 10 Performers - {selected_period}"
-            )
-            fig_top.update_layout(height=400)
-            st.plotly_chart(fig_top, use_container_width=True)
+            # Create visualization tabs for top performers
+            top_tabs = st.tabs(["Bar Chart", "Bubble Chart", "Polar Chart"])
+            
+            with top_tabs[0]:
+                # Create bar chart visualization for top performers
+                fig_top_bar = px.bar(
+                    top_10, 
+                    x='Ticker', 
+                    y='Percent Change',
+                    color='Percent Change',
+                    color_continuous_scale=['red', 'green'],
+                    title=f"Top 10 Performers - {selected_period}",
+                    text='Percent Change',
+                    hover_data=['Company', 'Current Price', 'Volume']
+                )
+                fig_top_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                fig_top_bar.update_layout(height=400, uniformtext_minsize=8, uniformtext_mode='hide')
+                st.plotly_chart(fig_top_bar, use_container_width=True)
+            
+            with top_tabs[1]:
+                # Create bubble chart for top performers
+                fig_top_bubble = px.scatter(
+                    top_10,
+                    x='Current Price',
+                    y='Percent Change',
+                    size='Volume',
+                    size_max=60,
+                    color='Percent Change',
+                    color_continuous_scale=['red', 'green'],
+                    hover_name='Company',
+                    text='Ticker',
+                    title=f"Top 10 Performers - Bubble Chart"
+                )
+                fig_top_bubble.update_traces(textposition='top center')
+                fig_top_bubble.update_layout(height=400)
+                st.plotly_chart(fig_top_bubble, use_container_width=True)
+            
+            with top_tabs[2]:
+                # Create polar chart for top performers
+                fig_top_polar = px.line_polar(
+                    top_10, 
+                    r='Percent Change', 
+                    theta='Ticker',
+                    color='Percent Change',
+                    color_continuous_scale=['red', 'green'],
+                    line_close=True,
+                    title=f"Top 10 Performers - Polar View"
+                )
+                fig_top_polar.update_layout(height=400)
+                st.plotly_chart(fig_top_polar, use_container_width=True)
         
         # Display bottom performers
         with col2:
             st.subheader("📉 Bottom 10 Performers")
+            
+            # Create table for bottom performers
             for i, row in bottom_10.iterrows():
                 with st.container():
                     cols = st.columns([3, 2, 2, 2])
@@ -246,17 +289,56 @@ def display_stock_data():
                         st.markdown(f"Vol: {row['Volume']:,}")
                     st.divider()
             
-            # Create visualization for bottom performers
-            fig_bottom = px.bar(
-                bottom_10.iloc[::-1],  # Reverse to show lowest at the bottom
-                x='Ticker', 
-                y='Percent Change',
-                color='Percent Change',
-                color_continuous_scale=['red', 'green'],
-                title=f"Bottom 10 Performers - {selected_period}"
-            )
-            fig_bottom.update_layout(height=400)
-            st.plotly_chart(fig_bottom, use_container_width=True)
+            # Create visualization tabs for bottom performers
+            bottom_tabs = st.tabs(["Bar Chart", "Bubble Chart", "Polar Chart"])
+            
+            with bottom_tabs[0]:
+                # Create bar chart visualization for bottom performers
+                fig_bottom_bar = px.bar(
+                    bottom_10.iloc[::-1],  # Reverse to show lowest at the bottom
+                    x='Ticker', 
+                    y='Percent Change',
+                    color='Percent Change',
+                    color_continuous_scale=['red', 'green'],
+                    title=f"Bottom 10 Performers - {selected_period}",
+                    text='Percent Change',
+                    hover_data=['Company', 'Current Price', 'Volume']
+                )
+                fig_bottom_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+                fig_bottom_bar.update_layout(height=400, uniformtext_minsize=8, uniformtext_mode='hide')
+                st.plotly_chart(fig_bottom_bar, use_container_width=True)
+            
+            with bottom_tabs[1]:
+                # Create bubble chart for bottom performers
+                fig_bottom_bubble = px.scatter(
+                    bottom_10,
+                    x='Current Price',
+                    y='Percent Change',
+                    size='Volume',
+                    size_max=60,
+                    color='Percent Change',
+                    color_continuous_scale=['red', 'green'],
+                    hover_name='Company',
+                    text='Ticker',
+                    title=f"Bottom 10 Performers - Bubble Chart"
+                )
+                fig_bottom_bubble.update_traces(textposition='top center')
+                fig_bottom_bubble.update_layout(height=400)
+                st.plotly_chart(fig_bottom_bubble, use_container_width=True)
+            
+            with bottom_tabs[2]:
+                # Create polar chart for bottom performers
+                fig_bottom_polar = px.line_polar(
+                    bottom_10, 
+                    r='Percent Change', 
+                    theta='Ticker',
+                    color='Percent Change',
+                    color_continuous_scale=['red', 'green'],
+                    line_close=True,
+                    title=f"Bottom 10 Performers - Polar View"
+                )
+                fig_bottom_polar.update_layout(height=400)
+                st.plotly_chart(fig_bottom_polar, use_container_width=True)
         
         # Add details expandable section
         with st.expander("View Detailed Data"):
@@ -265,6 +347,58 @@ def display_stock_data():
             if 'Market Cap Numeric' in view_data.columns:
                 view_data = view_data.drop(columns=['Market Cap Numeric'])
             st.dataframe(view_data, use_container_width=True)
+            
+            # Add comparative visualizations for all stocks
+            st.subheader("Comparative Analysis")
+            
+            # Create tabs for different comparative visualizations
+            comp_tabs = st.tabs(["Price vs Change", "Volume Distribution", "Treemap View"])
+            
+            with comp_tabs[0]:
+                # Scatter plot of price vs percent change
+                fig_scatter = px.scatter(
+                    view_data,
+                    x='Current Price',
+                    y='Percent Change',
+                    color='Percent Change',
+                    size='Volume',
+                    hover_name='Company',
+                    text='Ticker',
+                    title="Stock Price vs Percent Change",
+                    color_continuous_scale=['red', 'yellow', 'green']
+                )
+                fig_scatter.update_traces(textposition='top center')
+                fig_scatter.update_layout(height=500)
+                st.plotly_chart(fig_scatter, use_container_width=True)
+            
+            with comp_tabs[1]:
+                # Create sunburst chart for volume distribution
+                fig_sunburst = px.sunburst(
+                    view_data,
+                    path=['Ticker'],
+                    values='Volume',
+                    color='Percent Change',
+                    hover_name='Company',
+                    title="Trading Volume Distribution",
+                    color_continuous_scale=['red', 'yellow', 'green']
+                )
+                fig_sunburst.update_layout(height=500)
+                st.plotly_chart(fig_sunburst, use_container_width=True)
+            
+            with comp_tabs[2]:
+                # Create treemap of market cap vs performance
+                fig_treemap = px.treemap(
+                    view_data,
+                    path=['Ticker'],
+                    values='Volume',
+                    color='Percent Change',
+                    hover_name='Company',
+                    hover_data=['Current Price', 'Price Change'],
+                    title="Market Overview Treemap",
+                    color_continuous_scale=['red', 'yellow', 'green']
+                )
+                fig_treemap.update_layout(height=500)
+                st.plotly_chart(fig_treemap, use_container_width=True)
 
 # Display the stock data
 display_stock_data()

@@ -44,18 +44,55 @@ try:
     top_performers = db_utils.get_top_performers_history(days=lookback_days, limit=num_stocks)
     
     if not top_performers.empty:
-        # Create visualization
-        fig_top = px.bar(
-            top_performers,
-            x='ticker',
-            y='avg_percent_change',
-            color='avg_percent_change',
-            color_continuous_scale=['red', 'green'],
-            title=f"Top Performers Over the Last {lookback_days} Days",
-            hover_data=['company_name', 'appearance_count']
-        )
-        fig_top.update_layout(height=500)
-        st.plotly_chart(fig_top, use_container_width=True)
+        # Create visualization tabs
+        top_viz_tabs = st.tabs(["Bar Chart", "Radar Chart", "Bubble Chart"])
+        
+        with top_viz_tabs[0]:
+            # Bar chart
+            fig_top_bar = px.bar(
+                top_performers,
+                x='ticker',
+                y='avg_percent_change',
+                color='avg_percent_change',
+                color_continuous_scale=['red', 'green'],
+                title=f"Top Performers Over the Last {lookback_days} Days",
+                hover_data=['company_name', 'appearance_count'],
+                text='avg_percent_change'
+            )
+            fig_top_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+            fig_top_bar.update_layout(height=500)
+            st.plotly_chart(fig_top_bar, use_container_width=True)
+            
+        with top_viz_tabs[1]:
+            # Radar chart
+            fig_top_radar = px.line_polar(
+                top_performers,
+                r='avg_percent_change',
+                theta='ticker',
+                color='avg_percent_change',
+                color_continuous_scale=['red', 'green'],
+                line_close=True,
+                title=f"Top Performers Radar - Last {lookback_days} Days",
+                hover_name='company_name'
+            )
+            fig_top_radar.update_layout(height=500)
+            st.plotly_chart(fig_top_radar, use_container_width=True)
+            
+        with top_viz_tabs[2]:
+            # Bubble chart
+            fig_top_bubble = px.scatter(
+                top_performers,
+                x='ticker',
+                y='avg_percent_change',
+                size='appearance_count',
+                color='avg_percent_change',
+                hover_name='company_name',
+                size_max=60,
+                color_continuous_scale=['red', 'green'],
+                title=f"Top Performers Bubble Chart - Size represents frequency of appearance"
+            )
+            fig_top_bubble.update_layout(height=500)
+            st.plotly_chart(fig_top_bubble, use_container_width=True)
         
         # Display data table
         top_performers = top_performers.rename(columns={
@@ -77,18 +114,55 @@ try:
     bottom_performers = db_utils.get_bottom_performers_history(days=lookback_days, limit=num_stocks)
     
     if not bottom_performers.empty:
-        # Create visualization
-        fig_bottom = px.bar(
-            bottom_performers,
-            x='ticker',
-            y='avg_percent_change',
-            color='avg_percent_change',
-            color_continuous_scale=['red', 'green'],
-            title=f"Bottom Performers Over the Last {lookback_days} Days",
-            hover_data=['company_name', 'appearance_count']
-        )
-        fig_bottom.update_layout(height=500)
-        st.plotly_chart(fig_bottom, use_container_width=True)
+        # Create visualization tabs
+        bottom_viz_tabs = st.tabs(["Bar Chart", "Radar Chart", "Bubble Chart"])
+        
+        with bottom_viz_tabs[0]:
+            # Bar chart
+            fig_bottom_bar = px.bar(
+                bottom_performers,
+                x='ticker',
+                y='avg_percent_change',
+                color='avg_percent_change',
+                color_continuous_scale=['red', 'green'],
+                title=f"Bottom Performers Over the Last {lookback_days} Days",
+                hover_data=['company_name', 'appearance_count'],
+                text='avg_percent_change'
+            )
+            fig_bottom_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
+            fig_bottom_bar.update_layout(height=500)
+            st.plotly_chart(fig_bottom_bar, use_container_width=True)
+            
+        with bottom_viz_tabs[1]:
+            # Radar chart
+            fig_bottom_radar = px.line_polar(
+                bottom_performers,
+                r='avg_percent_change',
+                theta='ticker',
+                color='avg_percent_change',
+                color_continuous_scale=['red', 'green'],
+                line_close=True,
+                title=f"Bottom Performers Radar - Last {lookback_days} Days",
+                hover_name='company_name'
+            )
+            fig_bottom_radar.update_layout(height=500)
+            st.plotly_chart(fig_bottom_radar, use_container_width=True)
+            
+        with bottom_viz_tabs[2]:
+            # Bubble chart
+            fig_bottom_bubble = px.scatter(
+                bottom_performers,
+                x='ticker',
+                y='avg_percent_change',
+                size='appearance_count',
+                color='avg_percent_change',
+                hover_name='company_name',
+                size_max=60,
+                color_continuous_scale=['red', 'green'],
+                title=f"Bottom Performers Bubble Chart - Size represents frequency of appearance"
+            )
+            fig_bottom_bubble.update_layout(height=500)
+            st.plotly_chart(fig_bottom_bubble, use_container_width=True)
         
         # Display data table
         bottom_performers = bottom_performers.rename(columns={

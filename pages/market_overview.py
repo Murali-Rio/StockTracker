@@ -97,6 +97,28 @@ indices_data = get_indices_data(period_options[selected_period], interval)
 st.header("Major Market Indices")
 
 if indices_data:
+    # Create a heatmap of market performance
+    heatmap_data = []
+    for name, data in indices_data.items():
+        heatmap_data.append({
+            'Index': name,
+            'Current Value': data['current'],
+            'Change': data['change'],
+            'Percent Change': data['percent_change']
+        })
+    
+    heatmap_df = pd.DataFrame(heatmap_data)
+    
+    # Create heatmap with plotly
+    fig_heatmap = px.imshow(
+        heatmap_df.set_index('Index')[['Percent Change']].T,
+        color_continuous_scale=['red', 'white', 'green'],
+        labels=dict(x="Index", y="Metric", color="Value"),
+        title="Global Market Performance Heatmap"
+    )
+    fig_heatmap.update_layout(height=200)
+    st.plotly_chart(fig_heatmap, use_container_width=True)
+    
     # Create a matrix of metrics
     col1, col2, col3 = st.columns(3)
     
