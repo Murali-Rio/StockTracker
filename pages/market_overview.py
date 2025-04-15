@@ -4,7 +4,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
-import time
 
 # Set page configuration
 st.set_page_config(
@@ -12,6 +11,92 @@ st.set_page_config(
     page_icon="🌎",
     layout="wide"
 )
+
+# Custom CSS for better styling
+st.markdown("""
+<style>
+    /* Main page styling */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    /* Header styling */
+    h1, h2, h3 {
+        color: #1E88E5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    h1 {
+        background: linear-gradient(to right, #1E88E5, #42A5F5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Stock cards styling */
+    div[data-testid="stHorizontalBlock"] {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    /* Metric styling */
+    div[data-testid="stMetricValue"] {
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+    
+    div[data-testid="stMetricDelta"] {
+        font-size: 1rem;
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 2rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 3rem;
+        white-space: pre-wrap;
+        border-radius: 4px 4px 0 0;
+        padding: 0 1rem;
+        font-size: 1rem;
+    }
+    
+    /* Active tab styling */
+    .stTabs [aria-selected="true"] {
+        background-color: #e6f3ff !important;
+        font-weight: bold;
+    }
+    
+    /* Divider styling */
+    hr {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    }
+    
+    /* Footer styling */
+    footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f0f2f6;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+""", unsafe_allow_html=True)
+import time
+
+# This is already handled by the earlier set_page_config declaration
 
 # Page title
 st.title("🌎 Market Overview")
