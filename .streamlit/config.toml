@@ -1,3 +1,4 @@
+
 [server]
 headless = true
 address = "0.0.0.0"
@@ -13,13 +14,3 @@ font = "sans serif"
 [client]
 showErrorDetails = true
 toolbarMode = "minimal"
-[theme]
-primaryColor = "#1E88E5"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F8F9FA"
-textColor = "#262730"
-font = "sans serif"
-
-[server]
-port = 5000
-address = "0.0.0.0"
