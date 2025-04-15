@@ -61,10 +61,10 @@ if st.sidebar.button("Refresh Data"):
     st.rerun()
 
 # Auto-refresh option
-auto_refresh = st.sidebar.checkbox("Auto-refresh (every 5 minutes)", value=False)
+auto_refresh = st.sidebar.checkbox("Auto-refresh (daily)", value=False)
 last_refresh_time = datetime.now()
 
-@st.cache_data(ttl=300)  # Cache data for 5 minutes
+@st.cache_data(ttl=86400)  # Cache data for 24 hours (daily)
 def get_stock_data(index_symbol, period):
     try:
         # Get constituents of the selected index
@@ -262,15 +262,16 @@ if auto_refresh:
     # Add a placeholder for the countdown timer
     countdown_placeholder = st.empty()
     
-    # Calculate time until next refresh (5 minutes from last refresh)
-    next_refresh = last_refresh_time + timedelta(minutes=5)
+    # Calculate time until next refresh (24 hours from last refresh)
+    next_refresh = last_refresh_time + timedelta(hours=24)
     
-    # Update countdown every second
+    # Update countdown every minute
     while datetime.now() < next_refresh and auto_refresh:
         time_left = (next_refresh - datetime.now()).total_seconds()
-        mins, secs = divmod(int(time_left), 60)
-        countdown_placeholder.markdown(f"Next refresh in: **{mins:02d}:{secs:02d}**")
-        time.sleep(1)
+        hours, remainder = divmod(int(time_left), 3600)
+        mins, secs = divmod(remainder, 60)
+        countdown_placeholder.markdown(f"Next refresh in: **{hours:02d}:{mins:02d}:{secs:02d}**")
+        time.sleep(60)  # Update every minute instead of every second
         
         # Check if it's time to refresh
         if datetime.now() >= next_refresh:
@@ -281,5 +282,5 @@ st.markdown("---")
 st.markdown("""
 **About this app:**  
 This application displays real-time stock performance data using Yahoo Finance API.
-Data is refreshed every 5 minutes when auto-refresh is enabled, or you can manually refresh using the button.
+Data is refreshed daily when auto-refresh is enabled, or you can manually refresh using the button.
 """)
