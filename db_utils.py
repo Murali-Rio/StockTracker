@@ -63,7 +63,12 @@ def save_stock_performance(df, index_name, time_period):
 
     # Convert to DataFrame and save to database
     df_to_save = pd.DataFrame(records)
-    df_to_save.to_sql('stock_performance_history', engine, if_exists='append', index=False)
+    try:
+        df_to_save.to_sql('stock_performance_history', engine, if_exists='append', index=False)
+    except Exception as e:
+        # Silently handle database errors
+        pass
+
 
 def get_historical_performance(ticker, limit=30):
     """
