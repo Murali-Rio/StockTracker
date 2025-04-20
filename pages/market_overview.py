@@ -212,7 +212,7 @@ if indices_data:
         col = [col1, col2, col3][i % 3]
         
         # Determine color based on change
-        delta_color = "normal" if data['change'] >= 0 else "inverse"
+        delta_color = "normal" if float(data['change'].iloc[0]) >= 0 else "inverse"
         
         # Display metric
         with col:
