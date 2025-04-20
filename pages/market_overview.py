@@ -216,11 +216,15 @@ if indices_data:
         
         # Display metric
         with col:
-            delta_color = "normal" if float(data['change']) >= 0 else "inverse"
+            current_val = float(data['current'])
+            change_val = float(data['change'])
+            percent_val = float(data['percent_change'])
+            
+            delta_color = "normal" if change_val >= 0 else "inverse"
             st.metric(
                 label=name,
-                value=f"{data['current']:.2f}",
-                delta=f"{data['change']:.2f} ({data['percent_change']:.2f}%)",
+                value=f"{current_val:.2f}",
+                delta=f"{change_val:.2f} ({percent_val:.2f}%)",
                 delta_color=delta_color
             )
     
