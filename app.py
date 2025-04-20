@@ -335,8 +335,7 @@ def display_stock_data():
             st.warning(f"Could not save to database: {e}")
         
         # Display last updated timestamp
-        last_refresh_time = datetime.now()
-        st.write(f"Last updated: {last_refresh_time.strftime('%Y-%m-%d %H:%M:%S')}")
+       
         
         # Create columns for top and bottom performers
         col1, col2 = st.columns(2)
@@ -565,8 +564,4 @@ if auto_refresh:
 
 # Show app information at the bottom
 st.markdown("---")
-st.markdown("""
-**About this app:**  
-This application displays real-time stock performance data using Yahoo Finance API.
-Data is refreshed every minute when auto-refresh is enabled, or you can manually refresh using the button in the sidebar.
-""")
+
