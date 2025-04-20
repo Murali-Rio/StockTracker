@@ -216,6 +216,7 @@ if indices_data:
         
         # Display metric
         with col:
+            delta_color = "normal" if float(data['change']) >= 0 else "inverse"
             st.metric(
                 label=name,
                 value=f"{data['current']:.2f}",
