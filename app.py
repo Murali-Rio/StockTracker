@@ -26,13 +26,13 @@ st.markdown("""
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
-    
+
     /* Header styling */
     h1, h2, h3 {
         color: #1E88E5;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     h1 {
         background: linear-gradient(to right, #1E88E5, #42A5F5);
         -webkit-background-clip: text;
@@ -41,14 +41,14 @@ st.markdown("""
         font-weight: 800;
         margin-bottom: 1.5rem;
     }
-    
+
     h2 {
         font-size: 1.8rem;
         padding-top: 1rem;
         border-bottom: 2px solid #f0f2f6;
         padding-bottom: 0.5rem;
     }
-    
+
     /* Stock cards styling */
     .stContainer {
         background-color: #f8f9fa;
@@ -59,18 +59,18 @@ st.markdown("""
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         transition: all 0.3s ease;
     }
-    
+
     .stContainer:hover {
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         transform: translateY(-2px);
     }
-    
+
     /* Metric styling */
     div[data-testid="stMetricValue"] {
         font-size: 1.2rem;
         font-weight: bold;
     }
-    
+
     /* Tab styling */
     div[data-testid="stHorizontalBlock"] {
         background-color: #f8f9fa;
@@ -79,11 +79,11 @@ st.markdown("""
         margin-bottom: 1rem;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    
+
     .stTabs [data-baseweb="tab-list"] {
         gap: 2rem;
     }
-    
+
     .stTabs [data-baseweb="tab"] {
         height: 3rem;
         white-space: pre-wrap;
@@ -91,13 +91,13 @@ st.markdown("""
         padding: 0 1rem;
         font-size: 1rem;
     }
-    
+
     /* Active tab styling */
     .stTabs [aria-selected="true"] {
         background-color: #e6f3ff !important;
         font-weight: bold;
     }
-    
+
     /* Button styling */
     .stButton button {
         background-color: #1E88E5;
@@ -108,7 +108,7 @@ st.markdown("""
         border: none;
         transition: all 0.3s ease;
     }
-    
+
     .stButton button:hover {
         background-color: #1976D2;
         transform: translateY(-2px);
@@ -123,7 +123,7 @@ st.markdown("""
         height: 1px;
         background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
     }
-    
+
     /* Footer styling */
     footer {
         margin-top: 3rem;
@@ -133,7 +133,7 @@ st.markdown("""
         font-size: 0.8rem;
         color: #6c757d;
     }
-    
+
     /* Dataframe styling */
     .dataframe {
         border-radius: 10px;
@@ -146,13 +146,13 @@ st.markdown("""
         background-color: #f8f9fa;
         border-right: 1px solid #e6e6e6;
     }
-    
+
     /* Make positive values green and negative values red */
     .positive {
         color: green !important;
         font-weight: bold;
     }
-    
+
     .negative {
         color: red !important;
         font-weight: bold;
@@ -172,7 +172,10 @@ market_indices = {
     "S&P 500": "^GSPC",
     "Dow Jones": "^DJI",
     "NASDAQ": "^IXIC",
-    "Russell 2000": "^RUT"
+    "Russell 2000": "^RUT",
+    "NIFTY 50": "^NSEI",
+    "BSE SENSEX": "^BSESN",
+    "NIFTY Bank": "^NSEBANK"
 }
 
 selected_index = st.sidebar.selectbox(
@@ -216,7 +219,20 @@ last_refresh_time = datetime.now()
 def get_stock_data(index_symbol, period):
     try:
         # Get constituents of the selected index
-        if index_symbol == "^GSPC":  # S&P 500
+        if index_symbol == "^NSEI":  # NIFTY 50
+            tickers = ["RELIANCE.NS", "TCS.NS", "HDFCBANK.NS", "ICICIBANK.NS", "INFY.NS", "HINDUNILVR.NS", 
+                      "ITC.NS", "SBIN.NS", "BHARTIARTL.NS", "KOTAKBANK.NS", "LT.NS", "AXISBANK.NS", 
+                      "BAJFINANCE.NS", "ASIANPAINT.NS", "MARUTI.NS", "TITAN.NS", "SUNPHARMA.NS", "WIPRO.NS",
+                      "NESTLEIND.NS", "TATAMOTORS.NS"]
+        elif index_symbol == "^BSESN":  # BSE SENSEX
+            tickers = ["RELIANCE.BO", "TCS.BO", "HDFCBANK.BO", "ICICIBANK.BO", "INFY.BO", "HINDUNILVR.BO",
+                      "ITC.BO", "SBIN.BO", "BHARTIARTL.BO", "KOTAKBANK.BO", "LT.BO", "AXISBANK.BO",
+                      "BAJFINANCE.BO", "ASIANPAINT.BO", "MARUTI.BO", "TITAN.BO", "SUNPHARMA.BO", "WIPRO.BO",
+                      "NESTLEIND.BO", "TATAMOTORS.BO"]
+        elif index_symbol == "^NSEBANK":  # NIFTY Bank
+            tickers = ["HDFCBANK.NS", "ICICIBANK.NS", "SBIN.NS", "KOTAKBANK.NS", "AXISBANK.NS", 
+                      "INDUSINDBK.NS", "BANKBARODA.NS", "PNB.NS", "FEDERALBNK.NS", "IDFCFIRSTB.NS"]
+        elif index_symbol == "^GSPC":  # S&P 500
             # For S&P 500, we'll get a list of top companies by market cap
             tickers = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "GOOG", "META", "BRK-B", "UNH", "XOM", 
                       "TSLA", "JPM", "V", "PG", "MA", "HD", "CVX", "MRK", "ABBV", "KO", "PEP", "AVGO",
@@ -244,32 +260,32 @@ def get_stock_data(index_symbol, period):
                       "CNXN", "FELE", "ITIC", "CWT", "SCSC", "MLAB", "CASS", "KMPR", "CTRL", "AAON",
                       "HOPE", "UCBI", "HBNC", "BOOM", "GIII", "UNFI", "MNRO", "NWBI", "MTRX", "AMSF", 
                       "PRAA", "ANIK", "DIOD", "CYBE", "FORR", "BCOR", "BHE", "CRVL", "PATK", "SCS"]
-        
+
         # Download data for selected period
         data = yf.download(tickers, period=period_options[period], group_by='ticker')
-        
+
         # Prepare DataFrame for analysis
         stock_data = []
-        
+
         for ticker in tickers:
             try:
                 # Get current and previous close prices
                 ticker_data = data[ticker]
                 current_price = ticker_data['Close'].iloc[-1]
                 previous_price = ticker_data['Close'].iloc[0]
-                
+
                 # Calculate change metrics
                 price_change = current_price - previous_price
                 percent_change = (price_change / previous_price) * 100
-                
+
                 # Get volume (average over the period)
                 volume = ticker_data['Volume'].mean()
-                
+
                 # Get additional info
                 ticker_info = yf.Ticker(ticker).info
                 company_name = ticker_info.get('shortName', ticker)
                 market_cap = ticker_info.get('marketCap', 0)
-                
+
                 stock_data.append({
                     'Ticker': ticker,
                     'Company': company_name,
@@ -281,9 +297,9 @@ def get_stock_data(index_symbol, period):
                 })
             except Exception as e:
                 continue  # Skip tickers with issues
-        
+
         return pd.DataFrame(stock_data)
-    
+
     except Exception as e:
         st.error(f"Error fetching stock data: {e}")
         return pd.DataFrame()
@@ -291,22 +307,22 @@ def get_stock_data(index_symbol, period):
 # Main function to display stock data
 def display_stock_data():
     global last_refresh_time
-    
+
     with st.spinner("Fetching latest stock data..."):
         # Get stock data
         df = get_stock_data(market_indices[selected_index], selected_period)
-        
+
         if df.empty:
             st.warning("No data available. Please try another index or check your connection.")
             return
-        
+
         # Format the data
         df['Current Price'] = df['Current Price'].round(2)
         df['Price Change'] = df['Price Change'].round(2)
         df['Percent Change'] = df['Percent Change'].round(2)
         df['Volume'] = df['Volume'].astype(int)
         df['Market Cap'] = df['Market Cap'].apply(lambda x: f"${x/1e9:.2f}B" if x else "N/A")
-        
+
         # Sort based on selected metric
         sort_col = {
             "Percent Change": "Percent Change",
@@ -314,36 +330,36 @@ def display_stock_data():
             "Volume": "Volume",
             "Market Cap": "Market Cap"
         }[sort_metric]
-        
+
         if sort_col == "Market Cap":
             # Convert Market Cap back to numeric for sorting
             df['Market Cap Numeric'] = df['Market Cap'].apply(
                 lambda x: float(x.replace('$', '').replace('B', '')) if x != "N/A" else 0
             )
             sort_col = "Market Cap Numeric"
-        
+
         # Sort and get top/bottom performers
         df_sorted = df.sort_values(by=sort_col, ascending=False)
         top_10 = df_sorted.head(10).copy()
         bottom_10 = df_sorted.tail(10).copy()
-        
+
         # Save data to database
         try:
             db_utils.save_stock_performance(top_10, selected_index, selected_period)
             db_utils.save_stock_performance(bottom_10, selected_index, selected_period)
         except Exception as e:
             st.warning(f"Could not save to database: {e}")
-        
+
         # Display last updated timestamp
-       
-        
+
+
         # Create columns for top and bottom performers
         col1, col2 = st.columns(2)
-        
+
         # Display top performers
         with col1:
             st.subheader("🚀 Top 10 Performers")
-            
+
             # Create table for top performers
             for i, row in top_10.iterrows():
                 with st.container():
@@ -359,10 +375,10 @@ def display_stock_data():
                     with cols[3]:
                         st.markdown(f"Vol: {row['Volume']:,}")
                     st.divider()
-            
+
             # Create visualization tabs for top performers
             top_tabs = st.tabs(["Bar Chart", "Bubble Chart", "Polar Chart"])
-            
+
             with top_tabs[0]:
                 # Create bar chart visualization for top performers
                 fig_top_bar = px.bar(
@@ -378,7 +394,7 @@ def display_stock_data():
                 fig_top_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
                 fig_top_bar.update_layout(height=400, uniformtext_minsize=8, uniformtext_mode='hide')
                 st.plotly_chart(fig_top_bar, use_container_width=True)
-            
+
             with top_tabs[1]:
                 # Create bubble chart for top performers
                 fig_top_bubble = px.scatter(
@@ -396,7 +412,7 @@ def display_stock_data():
                 fig_top_bubble.update_traces(textposition='top center')
                 fig_top_bubble.update_layout(height=400)
                 st.plotly_chart(fig_top_bubble, use_container_width=True)
-            
+
             with top_tabs[2]:
                 # Create polar chart for top performers
                 fig_top_polar = px.line_polar(
@@ -409,11 +425,11 @@ def display_stock_data():
                 )
                 fig_top_polar.update_layout(height=400)
                 st.plotly_chart(fig_top_polar, use_container_width=True)
-        
+
         # Display bottom performers
         with col2:
             st.subheader("📉 Bottom 10 Performers")
-            
+
             # Create table for bottom performers
             for i, row in bottom_10.iterrows():
                 with st.container():
@@ -429,10 +445,10 @@ def display_stock_data():
                     with cols[3]:
                         st.markdown(f"Vol: {row['Volume']:,}")
                     st.divider()
-            
+
             # Create visualization tabs for bottom performers
             bottom_tabs = st.tabs(["Bar Chart", "Bubble Chart", "Polar Chart"])
-            
+
             with bottom_tabs[0]:
                 # Create bar chart visualization for bottom performers
                 fig_bottom_bar = px.bar(
@@ -448,7 +464,7 @@ def display_stock_data():
                 fig_bottom_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
                 fig_bottom_bar.update_layout(height=400, uniformtext_minsize=8, uniformtext_mode='hide')
                 st.plotly_chart(fig_bottom_bar, use_container_width=True)
-            
+
             with bottom_tabs[1]:
                 # Create bubble chart for bottom performers
                 fig_bottom_bubble = px.scatter(
@@ -466,7 +482,7 @@ def display_stock_data():
                 fig_bottom_bubble.update_traces(textposition='top center')
                 fig_bottom_bubble.update_layout(height=400)
                 st.plotly_chart(fig_bottom_bubble, use_container_width=True)
-            
+
             with bottom_tabs[2]:
                 # Create polar chart for bottom performers
                 fig_bottom_polar = px.line_polar(
@@ -479,7 +495,7 @@ def display_stock_data():
                 )
                 fig_bottom_polar.update_layout(height=400)
                 st.plotly_chart(fig_bottom_polar, use_container_width=True)
-        
+
         # Add details expandable section
         with st.expander("View Detailed Data"):
             # Create detailed table with all metrics
@@ -487,13 +503,13 @@ def display_stock_data():
             if 'Market Cap Numeric' in view_data.columns:
                 view_data = view_data.drop(columns=['Market Cap Numeric'])
             st.dataframe(view_data, use_container_width=True)
-            
+
             # Add comparative visualizations for all stocks
             st.subheader("Comparative Analysis")
-            
+
             # Create tabs for different comparative visualizations
             comp_tabs = st.tabs(["Price vs Change", "Volume Distribution", "Treemap View"])
-            
+
             with comp_tabs[0]:
                 # Scatter plot of price vs percent change
                 fig_scatter = px.scatter(
@@ -510,7 +526,7 @@ def display_stock_data():
                 fig_scatter.update_traces(textposition='top center')
                 fig_scatter.update_layout(height=500)
                 st.plotly_chart(fig_scatter, use_container_width=True)
-            
+
             with comp_tabs[1]:
                 # Create sunburst chart for volume distribution
                 fig_sunburst = px.sunburst(
@@ -524,7 +540,7 @@ def display_stock_data():
                 )
                 fig_sunburst.update_layout(height=500)
                 st.plotly_chart(fig_sunburst, use_container_width=True)
-            
+
             with comp_tabs[2]:
                 # Create treemap of market cap vs performance
                 fig_treemap = px.treemap(
@@ -547,21 +563,20 @@ display_stock_data()
 if auto_refresh:
     # Add a placeholder for the countdown timer
     countdown_placeholder = st.empty()
-    
+
     # Calculate time until next refresh (1 minute from last refresh)
     next_refresh = last_refresh_time + timedelta(minutes=1)
-    
+
     # Update countdown every second
     while datetime.now() < next_refresh and auto_refresh:
         time_left = (next_refresh - datetime.now()).total_seconds()
         mins, secs = divmod(int(time_left), 60)
         countdown_placeholder.markdown(f"Next refresh in: **{mins:02d}:{secs:02d}**")
         time.sleep(1)  # Update every second
-        
+
         # Check if it's time to refresh
         if datetime.now() >= next_refresh:
             st.rerun()
 
 # Show app information at the bottom
 st.markdown("---")
-
