@@ -22,7 +22,8 @@ def init_db():
         market_cap DECIMAL(20, 2),
         index_name VARCHAR(50) NOT NULL,
         time_period VARCHAR(50) NOT NULL,
-        recorded_date TIMESTAMP NOT NULL
+        recorded_date TIMESTAMP NOT NULL,
+        market_region VARCHAR(50)
     );
     
     CREATE INDEX IF NOT EXISTS idx_ticker ON stock_performance_history(ticker);
