@@ -285,13 +285,26 @@ if indices_data:
             metrics_col1, metrics_col2, metrics_col3, metrics_col4 = st.columns(4)
             
             with metrics_col1:
-                st.metric("High", f"{index_data['high']:.2f}")
+                st.metric("High", f"{float(index_data['high']):.2f}")
             with metrics_col2:
-                st.metric("Low", f"{index_data['low']:.2f}")
+                st.metric("Low", f"{float(index_data['low']):.2f}")
             with metrics_col3:
-                st.metric("Current", f"{index_data['current']:.2f}")
+                st.metric("Current", f"{float(index_data['current']):.2f}")
             with metrics_col4:
-                st.metric("Change %", f"{index_data['percent_change']:.2f}%")
+                st.metric("Change %", f"{float(index_data['percent_change']):.2f}%")
+
+            # Display index data with proper formatting
+            if not df.empty:
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Open", f"{float(df['Open'].iloc[-1]):.2f}")
+                    st.metric("High", f"{float(df['High'].iloc[-1]):.2f}")
+                with col2:
+                    st.metric("Close", f"{float(df['Close'].iloc[-1]):.2f}")
+                    st.metric("Low", f"{float(df['Low'].iloc[-1]):.2f}")
+                with col3:
+                    st.metric("Volume", f"{float(df['Volume'].iloc[-1]):,.0f}")
+                    st.metric("Change %", f"{float(df['Daily Return'].iloc[-1]):.2f}%")
     
     with tab2:
         # Performance comparison of all indices
@@ -369,8 +382,3 @@ else:
 
 # Show app information at the bottom
 st.markdown("---")
-st.markdown("""
-**About this page:**  
-This page provides an overview of major market indices worldwide and their performance.
-Compare different indices and analyze market trends across various time periods.
-""")

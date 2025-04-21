@@ -843,8 +843,3 @@ else:
 
 # Show app information at the bottom
 st.markdown("---")
-st.markdown("""
-**About this page:**  
-This page provides detailed analysis for individual stocks with historical price data.
-Enter a stock ticker in the sidebar to analyze any publicly traded company.
-""")

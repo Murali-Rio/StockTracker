@@ -106,8 +106,11 @@ num_stocks = st.sidebar.slider(
 st.header("Historical Top Performers")
 
 try:
+    # Get database connection
+    db, _ = db_utils.get_database_connection()
+    
     # Get historical top performers
-    top_performers = db_utils.get_top_performers_history(days=lookback_days, limit=num_stocks)
+    top_performers = db_utils.get_top_performers_history(db, days=lookback_days, limit=num_stocks)
     
     if not top_performers.empty:
         # Create visualization tabs
@@ -118,12 +121,12 @@ try:
             fig_top_bar = px.bar(
                 top_performers,
                 x='ticker',
-                y='avg_percent_change',
-                color='avg_percent_change',
+                y='percent_change',
+                color='percent_change',
                 color_continuous_scale=['red', 'green'],
                 title=f"Top Performers Over the Last {lookback_days} Days",
-                hover_data=['company_name', 'appearance_count'],
-                text='avg_percent_change'
+                hover_data=['current_price', 'volume'],
+                text='percent_change'
             )
             fig_top_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
             fig_top_bar.update_layout(height=500)
@@ -133,12 +136,12 @@ try:
             # Radar chart
             fig_top_radar = px.line_polar(
                 top_performers,
-                r='avg_percent_change',
+                r='percent_change',
                 theta='ticker',
                 color_discrete_sequence=['green'],
                 line_close=True,
                 title=f"Top Performers Radar - Last {lookback_days} Days",
-                hover_name='company_name'
+                hover_data=['current_price', 'volume']
             )
             fig_top_radar.update_layout(height=500)
             st.plotly_chart(fig_top_radar, use_container_width=True)
@@ -148,13 +151,13 @@ try:
             fig_top_bubble = px.scatter(
                 top_performers,
                 x='ticker',
-                y='avg_percent_change',
-                size='appearance_count',
-                color='avg_percent_change',
-                hover_name='company_name',
+                y='percent_change',
+                size='volume',
+                color='percent_change',
+                hover_data=['current_price'],
                 size_max=60,
                 color_continuous_scale=['red', 'green'],
-                title=f"Top Performers Bubble Chart - Size represents frequency of appearance"
+                title=f"Top Performers Bubble Chart - Size represents trading volume"
             )
             fig_top_bubble.update_layout(height=500)
             st.plotly_chart(fig_top_bubble, use_container_width=True)
@@ -162,11 +165,11 @@ try:
         # Display data table
         top_performers = top_performers.rename(columns={
             'ticker': 'Ticker',
-            'company_name': 'Company',
-            'appearance_count': 'Appearances in Top List',
-            'avg_percent_change': 'Avg. Percent Change (%)'
+            'percent_change': 'Percent Change (%)',
+            'current_price': 'Current Price',
+            'volume': 'Volume'
         })
-        top_performers['Avg. Percent Change (%)'] = top_performers['Avg. Percent Change (%)'].round(2)
+        top_performers['Percent Change (%)'] = top_performers['Percent Change (%)'].round(2)
         st.dataframe(top_performers, use_container_width=True)
     else:
         st.info("No historical data available for top performers. Run the app for a few days to collect data.")
@@ -176,7 +179,7 @@ try:
     
     # Get historical bottom performers
     st.header("Historical Bottom Performers")
-    bottom_performers = db_utils.get_bottom_performers_history(days=lookback_days, limit=num_stocks)
+    bottom_performers = db_utils.get_bottom_performers_history(db, days=lookback_days, limit=num_stocks)
     
     if not bottom_performers.empty:
         # Create visualization tabs
@@ -187,12 +190,12 @@ try:
             fig_bottom_bar = px.bar(
                 bottom_performers,
                 x='ticker',
-                y='avg_percent_change',
-                color='avg_percent_change',
+                y='percent_change',
+                color='percent_change',
                 color_continuous_scale=['red', 'green'],
                 title=f"Bottom Performers Over the Last {lookback_days} Days",
-                hover_data=['company_name', 'appearance_count'],
-                text='avg_percent_change'
+                hover_data=['current_price', 'volume'],
+                text='percent_change'
             )
             fig_bottom_bar.update_traces(texttemplate='%{text:.2f}%', textposition='outside')
             fig_bottom_bar.update_layout(height=500)
@@ -202,12 +205,12 @@ try:
             # Radar chart
             fig_bottom_radar = px.line_polar(
                 bottom_performers,
-                r='avg_percent_change',
+                r='percent_change',
                 theta='ticker',
                 color_discrete_sequence=['red'],
                 line_close=True,
                 title=f"Bottom Performers Radar - Last {lookback_days} Days",
-                hover_name='company_name'
+                hover_data=['current_price', 'volume']
             )
             fig_bottom_radar.update_layout(height=500)
             st.plotly_chart(fig_bottom_radar, use_container_width=True)
@@ -217,13 +220,13 @@ try:
             fig_bottom_bubble = px.scatter(
                 bottom_performers,
                 x='ticker',
-                y='avg_percent_change',
-                size='appearance_count',
-                color='avg_percent_change',
-                hover_name='company_name',
+                y='percent_change',
+                size='volume',
+                color='percent_change',
+                hover_data=['current_price'],
                 size_max=60,
                 color_continuous_scale=['red', 'green'],
-                title=f"Bottom Performers Bubble Chart - Size represents frequency of appearance"
+                title=f"Bottom Performers Bubble Chart - Size represents trading volume"
             )
             fig_bottom_bubble.update_layout(height=500)
             st.plotly_chart(fig_bottom_bubble, use_container_width=True)
@@ -231,11 +234,11 @@ try:
         # Display data table
         bottom_performers = bottom_performers.rename(columns={
             'ticker': 'Ticker',
-            'company_name': 'Company',
-            'appearance_count': 'Appearances in Bottom List',
-            'avg_percent_change': 'Avg. Percent Change (%)'
+            'percent_change': 'Percent Change (%)',
+            'current_price': 'Current Price',
+            'volume': 'Volume'
         })
-        bottom_performers['Avg. Percent Change (%)'] = bottom_performers['Avg. Percent Change (%)'].round(2)
+        bottom_performers['Percent Change (%)'] = bottom_performers['Percent Change (%)'].round(2)
         st.dataframe(bottom_performers, use_container_width=True)
     else:
         st.info("No historical data available for bottom performers. Run the app for a few days to collect data.")
@@ -245,8 +248,3 @@ except Exception as e:
 
 # Show app information at the bottom
 st.markdown("---")
-st.markdown("""
-**About this page:**  
-This page shows historical stock performance data that is collected and stored in the database.
-The data is updated each time the main page refreshes or when you manually trigger a refresh.
-""")

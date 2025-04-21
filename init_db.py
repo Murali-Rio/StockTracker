@@ -1,36 +1,31 @@
 
 import os
-from sqlalchemy import create_engine, text
+from pymongo import MongoClient
+from dotenv import load_dotenv
 
-# Get database connection string from environment variables
-DATABASE_URL = os.environ.get('DATABASE_URL')
+# Load environment variables
+load_dotenv()
+
+# Get MongoDB connection string from environment variables
+MONGODB_URL = os.environ.get('MONGODB_URL', 'mongodb://localhost:27017')
+DB_NAME = os.environ.get('DB_NAME', 'stocktracker')
 
 def init_db():
-    """Initialize the database with required tables"""
-    engine = create_engine(DATABASE_URL)
+    """Initialize the MongoDB database with required collections"""
+    client = MongoClient(MONGODB_URL)
+    db = client[DB_NAME]
     
-    # Create tables
-    with engine.connect() as conn:
-        conn.execute(text("""
-        DROP TABLE IF EXISTS stock_performance_history;
-        CREATE TABLE stock_performance_history (
-            id SERIAL PRIMARY KEY,
-            ticker VARCHAR(20) NOT NULL,
-            company_name VARCHAR(255) NOT NULL,
-            current_price DECIMAL(20, 2),
-            price_change DECIMAL(20, 2),
-            percent_change DECIMAL(10, 2),
-            volume BIGINT,
-            market_cap DECIMAL(20, 2),
-            index_name VARCHAR(50) NOT NULL,
-            time_period VARCHAR(50) NOT NULL,
-            recorded_date TIMESTAMP NOT NULL,
-            market_region VARCHAR(50)
-        );
-        
-        CREATE INDEX IF NOT EXISTS idx_ticker ON stock_performance_history(ticker);
-        """))
-        conn.commit()
+    # Drop existing collection if it exists
+    if 'stock_performance_history' in db.list_collection_names():
+        db.drop_collection('stock_performance_history')
+    
+    # Create collection
+    collection = db.create_collection('stock_performance_history')
+    
+    # Create index on ticker field
+    collection.create_index('ticker')
+    
+    print(f"MongoDB database '{DB_NAME}' initialized successfully!")
 
 if __name__ == "__main__":
     init_db()
